@@ -27,7 +27,7 @@ class Notifs extends Component {
     const componentStyles = forceNotifsStyles || !theme ? styles : {};
     return (
       <div className={classnames('notif-container', className)} style={componentStyles}>
-        <TransitionGroup transitionName="notif">
+        <TransitionGroup transitionName="notif" transitionEnterTimeout={500} transitionLeaveTimeout={500}>
           {items}
         </TransitionGroup>
       </div>
