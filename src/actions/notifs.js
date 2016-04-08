@@ -11,11 +11,14 @@ export function notifSend(notif) {
   if (!notif.id) {
     notif.id = new Date().getTime();
   }
-  return dispatch => {
+
+  return (dispatch) => {
     dispatch({ type: NOTIF_SEND, payload: notif });
 
     if (notif.dismissAfter) {
-      setTimeout(() => { dispatch({ type: NOTIF_DISMISS, payload: notif.id}); }, notif.dismissAfter);
+      setTimeout(() => {
+        dispatch({type: NOTIF_DISMISS, payload: notif.id});
+      }, notif.dismissAfter);
     }
   };
 }
@@ -24,12 +27,12 @@ export function notifSend(notif) {
  * Dismiss a notification by the given id.
  */
 export function notifDismiss(id) {
-  return { type: NOTIF_DISMISS, payload: id };
+  return {type: NOTIF_DISMISS, payload: id};
 }
 
 /**
  * Clear all notifications
  */
 export function notifClear() {
-  return { type: NOTIF_CLEAR };
+  return {type: NOTIF_CLEAR};
 }

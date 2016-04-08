@@ -1,70 +1,7 @@
-import React, { Component, PropTypes } from 'react';
+import React, {Component, PropTypes} from 'react';
 import classnames from 'classnames';
-const { string, func, number, shape } = PropTypes;
 
-/**
- * A single notification component
- */
-class Notif extends Component {
-  static defaultProps = {
-    kind: 'info'
-  }
-
-  constructor() {
-    super();
-    this._id = new Date().getTime();
-    this._onActionClick = this._onActionClick.bind(this);
-  }
-
-  /*
-   * Handle action click event
-   * @description Handle click events on the
-   */
-  _onActionClick = (event) => {
-    event.preventDefault();
-    if (this.props.onClick) {
-      this.props.onActionClick();
-    } else {
-      return;
-    }
-  }
-
-  render() {
-    const { theme, kind, CustomComponent, action } = this.props;
-
-    let classes;
-    let styles = {};
-    if (!theme) {
-      const stylesPerType = stylesNotif[kind];
-      styles = {
-        ...stylesNotif.base,
-        ...stylesPerType,
-      };
-    } else {
-      classes = classnames('re-notif', theme.defaultClasses, theme[`${kind}Classes`]);
-    }
-
-    const component = !CustomComponent ?
-      <div className={classes} style={styles}>
-        <div>
-          <div className="notif-icon"/>
-          <div className="notif-content">
-            <span className="notif-message">{this.props.message}</span>
-          </div>
-          { action &&
-            <span className="notif-action">
-              <button onClick={this._onActionClick}>{this.props.action}</button>
-            </span>
-          }
-          <div className="notif-close"/>
-        </div>
-      </div>
-      :
-      <CustomComponent {...this.props}/>;
-
-    return component;
-  }
-}
+const {string, func, number, shape} = PropTypes;
 
 const stylesNotif = {
   base: {
@@ -97,18 +34,76 @@ const stylesNotif = {
   }
 };
 
-const styleCountdown = {
-  base: {
-    position: 'absolute',
-    bottom: 0,
-    width: 0,
-    height: 4
-  },
-
-  info: {
-    'backgroundColor': '#71bbff'
+/**
+ * A single notification component
+ */
+class Notif extends Component {
+  static defaultProps = {
+    kind: 'info'
   }
-};
+
+  constructor() {
+    super();
+    this._id = new Date().getTime();
+    this._onActionClick = this._onActionClick.bind(this);
+  }
+
+  /*
+   * Handle action click event
+   * @description Handle click events on the
+   */
+  _onActionClick = (event) => {
+    event.preventDefault();
+
+    if (this.props.onClick) {
+      this.props.onActionClick();
+
+    } else {
+      return;
+    }
+  }
+
+  render() {
+    const {theme, kind, CustomComponent, action} = this.props;
+
+    let classes;
+    let styles = {};
+
+    if (!theme) {
+      const stylesPerType = stylesNotif[kind];
+
+      styles = {
+        ...stylesNotif.base,
+        ...stylesPerType
+      };
+
+    } else {
+      classes = classnames('re-notif', theme.defaultClasses, theme[`${kind}Classes`]);
+    }
+
+    const component = !CustomComponent ?
+      <div className={classes} style={styles}>
+        <div>
+          <div className="notif-icon"/>
+          <div className="notif-content">
+            <span className="notif-message">{this.props.message}</span>
+          </div>
+          {
+            action &&
+            <span className="notif-action">
+              <button onClick={this._onActionClick}>{this.props.action}</button>
+            </span>
+          }
+          <div className="notif-close" />
+        </div>
+      </div>
+      :
+      <CustomComponent {...this.props} />;
+
+    return component;
+  }
+}
+
 
 Notif.propTypes = {
   /*
@@ -137,11 +132,6 @@ Notif.propTypes = {
    * The time in milliseconds that the notification will automatically dismiss after
    */
   dismissAfter: number,
-
-  /*
-   * A handler to be invoked upon notification dismiss
-   */
-  onDismis: func,
 
   theme: shape({
     defaultClasses: string,

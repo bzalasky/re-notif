@@ -1,39 +1,11 @@
-import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
+import React, {Component, PropTypes} from 'react';
+import {connect} from 'react-redux';
 import TransitionGroup from 'react/lib/ReactCSSTransitionGroup';
 import classnames from 'classnames';
 
-const getter = (obj, propName) => {return obj.get ? obj.get(propName) : obj[propName]};
-
 import Notif from './Notif';
 
-class Notifs extends Component {
-  static propTypes = {
-    theme: PropTypes.object,
-    className: PropTypes.string,
-    CustomComponent: PropTypes.func,
-    forceNotifsStyles: PropTypes.bool
-  }
-
-  render() {
-    const { notifs, theme, className, CustomComponent, forceNotifsStyles} = this.props;
-
-    const items = notifs.map((notif) => {
-      return (
-        <Notif key={getter(notif, 'id')} message={getter(notif, 'message')} kind={getter(notif, 'kind')} theme={theme} CustomComponent={CustomComponent}/>
-      );
-    });
-
-    const componentStyles = forceNotifsStyles || !theme ? styles : {};
-    return (
-      <div className={classnames('notif-container', className)} style={componentStyles}>
-        <TransitionGroup transitionName="notif" transitionEnterTimeout={500} transitionLeaveTimeout={500}>
-          {items}
-        </TransitionGroup>
-      </div>
-    );
-  }
-}
+const getter = (obj, propName) => obj.get ? obj.get(propName) : obj[propName];
 
 const styles = {
   position: 'fixed',
@@ -46,9 +18,57 @@ const styles = {
   margin: 'auto'
 };
 
+class Notifs extends Component {
+  static propTypes = {
+    theme: PropTypes.object,
+    className: PropTypes.string,
+    CustomComponent: PropTypes.func,
+    forceNotifsStyles: PropTypes.bool,
+    transitionTimeout: PropTypes.number
+  }
+
+  render() {
+    const {
+      notifs,
+      theme,
+      className,
+      CustomComponent,
+      forceNotifsStyles,
+      transitionTimeout
+    } = this.props;
+
+    const items = notifs.map((notif) => {
+      return (
+        <Notif
+          key={getter(notif, 'id')}
+          message={getter(notif, 'message')}
+          kind={getter(notif, 'kind')}
+          theme={theme}
+          CustomComponent={CustomComponent}
+        />
+      );
+    });
+
+    const componentStyles = forceNotifsStyles || !theme ? styles : {};
+    const timeout = transitionTimeout || 500;
+
+    return (
+      <div className={classnames('notif-container', className)} style={componentStyles}>
+        <TransitionGroup
+          transitionName="notif"
+          transitionEnterTimeout={timeout}
+          transitionLeaveTimeout={timeout}
+        >
+          {items}
+        </TransitionGroup>
+      </div>
+    );
+  }
+}
+
 export default connect(
   (state) => {
-    return { notifs: state.get ? state.get('notifs') : state.notifs };
+    return {notifs: state.get ? state.get('notifs') : state.notifs};
   },
-  { }
+  {}
 )(Notifs);
